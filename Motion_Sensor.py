@@ -5,6 +5,7 @@
 # Imports
 import RPi.GPIO as GPIO
 import time
+import Camera
 
 # Pin of motion sensor (CHANGE WHEN HARDWARE ACQUIRED)
 pin_motion = 14
@@ -18,7 +19,7 @@ GPIO.setup(pin_motion, GPIO.IN)
 # Define motion
 def motion(pin_motion):
     print("Motion Sensed")
-    # Run Camera (TO DO)
+    Camera.beginStream()
 
 
 # If motion sensed call MOTION method
