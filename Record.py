@@ -8,20 +8,30 @@ from gpiozero import MotionSensor
 from picamera import PiCamera
 from time import sleep
 from signal import pause
+from datetime import datetime
 
 # Create objects that refer to a motion sensor and the PiCamera
-pir = MotionSensor(14)
+#pir = MotionSensor(14)
 camera = PiCamera()
 
 # Start the camera
 camera.rotation = 180
-camera.start_preview()
+#camera.start_preview()
 
 # Image names
 i = 0
 
 # Toggle between video and photo burst (0 = video, 1 = photo)
-option = 0
+option = 1
+
+def get_photo():
+    timestamp = datetime.now()
+    fileLoc = "/home/pi/Desktop/final/images/secimg_" + timestamp.strftime("%d-%m-%Y_%H:%M:%S") + ".jpg"
+    camera.capture(fileLoc)
+    return fileLoc
+
+
+
 
 # Stop the camera when the pushbutton is pressed
 def stop_camera():
@@ -41,7 +51,8 @@ def take_photo():
         camera.stop_recording()
         print("a video has been taken")
     if option == 1:
-        camera.capture('/home/pi/Desktop/burst%s_image%s.jpg' % (i, t))
+        return camera.capture('/home/pi/Desktop/burst%s_image%s.jpg' % (i, t))
+
         sleep(.5)
         t += 1
         camera.capture('/home/pi/Desktop/burst%s_image%s.jpg' % (i, t))
@@ -55,6 +66,4 @@ def take_photo():
 
 
 # Assign a function that runs when motion is detected
-pir.when_motion = take_photo
-
-pause()
+#pir.when_motion = take_photo
