@@ -58,3 +58,7 @@ def detectMotion():
 
 
 # app route used to get snapshot from camera module
+@app.route('/getimg', methods=['GET'])
+def getImg():
+	fileLoc = Record.get_photo()
+	return send_file(fileLoc, mimetype='image/jpg') 
