@@ -23,9 +23,8 @@ import com.android.volley.toolbox.Volley;
 
 public class ResponseActivity extends AppCompatActivity {
 
-    private Button btnReset, btnPolice, btnGetImg, btnOff;
+    private Button btnReset, btnPolice;
     private ImageView imgCapture;
-    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +36,6 @@ public class ResponseActivity extends AppCompatActivity {
         // create instances of buttons in activity
         btnReset = findViewById(R.id.btnReset);
         btnPolice = findViewById(R.id.btnPolice);
-        btnGetImg = findViewById(R.id.btnGetImg);
-        btnOff = findViewById(R.id.btnOff);
         imgCapture = findViewById(R.id.imgCapture);
 
         // call police on btnPolice click
@@ -47,18 +44,18 @@ public class ResponseActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                     Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                    callIntent.setData(Uri.parse("tel:9783052708"));
+                    callIntent.setData(Uri.parse("tel:911"));
                     startActivity(callIntent);
                 }
         });
 
         // take and get image from server
         // ImageRequest code from: https://medium.com/@manuaravindpta/networking-using-volley-library-39c22061b4ba
-        btnGetImg.setOnClickListener(new View.OnClickListener() {
+        /*btnGetImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //POST method
-                String url = "http://10.245.73.230:5000/getimg";
+                String url = "http://10.245.66.214:5000/getimg";
                 int maxWidth = imgCapture.getMaxWidth();
                 int maxHeight = imgCapture.getMaxHeight();
                 ImageRequest imageRequest = new ImageRequest(url, new Response.Listener<Bitmap>() {
@@ -77,6 +74,22 @@ public class ResponseActivity extends AppCompatActivity {
                 //add request to queue
                 requestQueue.add(imageRequest);
             }
+        });*/
+
+
+        // reset button brings user back to main activity page with the option to initialize the security system again
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // bring user back to main activity
+                openMainActivity();
+            }
         });
+    }
+
+    // opens main activity
+    private void openMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }
