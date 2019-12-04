@@ -1,10 +1,14 @@
 from flask import *
 import RPi.GPIO as GPIO
 from gpiozero import MotionSensor
-import Record
+from picamera import PiCamera
 import time
 from threading import Thread
-import random
+from datetime import datetime
+
+pir = MotionSensor(14)
+camera = PiCamera()
+camera.rotation = 180
 
 app = Flask(__name__)
 
@@ -21,8 +25,10 @@ def initGerald():
 	# create thread to constantly check for motion detection to keep server responsive
 	global detected
 	detected = False
-	bgThread = Thread(target=detectMotion)
-	bgThread.start()
+	# add method to motion sensor to set detected bool to true on motion detection
+	pir.when_motion = setDetected
+	#bgThread = Thread(target=detectMotion)
+	#bgThread.start()
 
 	return "Connection okay. Security System Initialized"
 
@@ -31,7 +37,13 @@ def initGerald():
 @app.route('/checkDetection', methods=['GET'])
 def checkDetection():
 	global detected
+	print (detected)
 	return str(detected)
+
+# method sets detected variable to true on motion detection
+def setDetected():
+	global detected
+	detected = True
 
 
 # route to stop motion detection
@@ -42,23 +54,22 @@ def stopDetection():
 	return "Stopped Motion Detection"
 
 
-
-# run method in background to check for motion detection while GERALD is running
-def detectMotion():
-	while detect:
-		# code to check if pi sensor has detected motion
-		# if it has, set global bool to true
-		if random.uniform(0, 1) > .95:
-			global detected
-			detected = True
-			return "motion detected"
-
-		# update detection every 2 seconds
-		time.sleep(2)
-
-
 # app route used to get snapshot from camera module
-@app.route('/getimg', methods=['GET'])
+@app.route('/getimg', methods=['POST'])
 def getImg():
-	fileLoc = Record.get_photo()
-	return send_file(fileLoc, mimetype='image/jpg') 
+	timestamp = datetime.now()
+	unID = timestamp.strftime("%d-%m-%Y_%H.%M.%S")
+	imgName = "secimg_" + unID + ".jpg"
+	fileLoc = "/home/pi/Desktop/final/static/" + imgName
+	camera.capture(fileLoc)
+	return "took picture"
+
+# uses the attached pi camera to take picture
+# return its unique ID (exact time taken) to user
+@app.route('/getImage', methods=['GET'])
+def getImage():
+	timestamp = datetime.now()
+	imgID = timestamp.strftime("%d-%m-%Y_%H:%M:%S")
+	fileLoc = "/home/pi/Desktop/final/static/" + imgID + ".jpg"
+	camera.capture(fileLoc)
+	return str("/static/" + imgID + ".jpg")
