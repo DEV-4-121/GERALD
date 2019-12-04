@@ -20,17 +20,14 @@ import static java.lang.Boolean.parseBoolean;
 public class MainActivity extends AppCompatActivity {
 
     private Button btnRun, btnStop;
-    private ImageView imgCapture;
     private static boolean detect;
     private static boolean motionDetected;
+    private static final String serverIP = "http://169.254.91.218:5000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        imgCapture = findViewById(R.id.imgCapture);
-
         final RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         // get access to btnRun and btnStop
@@ -47,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Tell server to turn security system on through post request
-                String url = "http://169.254.91.218:5000/init";
+                String url = serverIP + "/init";
                 StringRequest stringRequest
                         = new StringRequest(
                         Request.Method.POST,
@@ -55,6 +52,16 @@ public class MainActivity extends AppCompatActivity {
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
+                                // start new thread to periodically check if motion has been detected
+                                detect = true;
+
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        checkDetection();
+                                    }
+                                }).start();
+
                                 System.out.println("security system initialized");
                             }
                         },
@@ -67,23 +74,13 @@ public class MainActivity extends AppCompatActivity {
                         });
                 requestQueue.add(stringRequest);
 
-                // start new thread to periodically check if motion has been detected
-                detect = true;
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        checkDetection();
-                    }
-                }).start();
-
                 // disable button and enable stop button
                 btnRun.setEnabled(false);
                 btnStop.setEnabled(true);
             }
         });
 
-        // Hitting stop button will exit threads on both server and ap side that are checking for motion
+        // Hitting stop button will exit threads on both server and app side that are checking for motion
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 detect = false;
 
                 // Tell server to stop motion detection through post request
-                String url = "http://169.254.91.218:5000/stopDetection";
+                String url = serverIP + "/stopDetection";
                 StringRequest stringRequest
                         = new StringRequest(
                         Request.Method.POST,
@@ -130,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         while (detect) {
             try {
                 // get boolean from server to check status of motion sensor
-                String url = "http://169.254.91.218:5000/checkDetection";
+                String url = serverIP + "/checkDetection";
                 StringRequest boolRequest
                         = new StringRequest(
                         Request.Method.GET,
@@ -138,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
+                                System.out.println(response);
                                 if (parseBoolean(response)) {
                                     setDetectStatus();
                                 }
@@ -146,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                error.printStackTrace();
+                                System.out.println("Failed to check detection from server");
                             }
                         });
                 requestQueue.add(boolRequest);
