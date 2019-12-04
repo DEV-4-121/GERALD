@@ -2,13 +2,10 @@ package com.example.gerald_app;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,37 +23,14 @@ public class ResponseActivity extends AppCompatActivity {
     private Button btnReset, btnPolice;
     private ImageView imgCapture;
     private static boolean imageCheck;
+    private static final String serverIP = "http://169.254.91.218:5000";
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_response);
-
-        final RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        // set imageCheck to true while user is on response page
-        imageCheck = true;
-
-        // Get image from server and populate image on UI with it
-        String url = "http://10.245.66.214:5000/getimg";
-        int maxWidth = imgCapture.getMaxWidth();
-        int maxHeight = imgCapture.getMaxHeight();
-        final ImageRequest imageRequest = new ImageRequest(url, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap response) {
-                // Assign the response to imgCapture
-                imgCapture.setImageBitmap(response);
-            }
-        }, maxWidth, maxHeight, ImageView.ScaleType.CENTER_INSIDE, null, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error)
-            {
-                error.printStackTrace();
-            }
-        });
-        //add request to queue
-        requestQueue.add(imageRequest);
 
         // create instances of buttons in activity
         btnReset = findViewById(R.id.btnReset);
@@ -88,6 +62,14 @@ public class ResponseActivity extends AppCompatActivity {
         });
 
 
+
+    }
+
+    // override starts image thread whenever activity is reopened
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
         // start bgThread to update image from server
         new Thread(new Runnable() {
             @Override
@@ -98,39 +80,54 @@ public class ResponseActivity extends AppCompatActivity {
     }
 
     // method to keep updating image from server while user is on response page
-    private void updateImg() {
-        final RequestQueue requestQueue = Volley.newRequestQueue(this);
+    // nested requests firsts takes image with camera, then populates the apps image view with it
+    public void updateImg() {
+        imageCheck = true;
         while (imageCheck) {
+            final RequestQueue requestQueue = Volley.newRequestQueue(this);
+            String url = serverIP + "/getImage";
+            StringRequest stringRequest
+                    = new StringRequest(
+                    Request.Method.GET,
+                    url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            System.out.println(response);
+                            String imgURL = serverIP + response;
+                            int maxWidth = imgCapture.getMaxWidth();
+                            int maxHeight = imgCapture.getMaxHeight();
+                            ImageRequest imageRequest = new ImageRequest(imgURL, new Response.Listener<Bitmap>() {
+                                @Override
+                                public void onResponse(Bitmap imgResponse) {
+                                    // Assign the response to imgCapture
+                                    imgCapture.setImageBitmap(imgResponse);
+                                }
+                            }, maxWidth, maxHeight, ImageView.ScaleType.CENTER_INSIDE, null, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error)
+                                {
+                                    System.out.println("Failed to get image from camera on server");
+                                }
+                            });
+                            //add request to queue
+                            requestQueue.add(imageRequest);
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error)
+                        {
+                            error.printStackTrace();
+                        }
+                    });
+            requestQueue.add(stringRequest);
             try {
-                String url = "http://169.254.91.218:5000/getimg";
-                int maxWidth = imgCapture.getMaxWidth();
-                int maxHeight = imgCapture.getMaxHeight();
-                ImageRequest imageRequest = new ImageRequest(url, new Response.Listener<Bitmap>() {
-                    @Override
-                    public void onResponse(Bitmap response) {
-                        // Assign the response to imgCapture
-                        imgCapture.setImageBitmap(response);
-                    }
-                }, maxWidth, maxHeight, ImageView.ScaleType.CENTER_INSIDE, null, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error)
-                    {
-                        error.printStackTrace();
-                    }
-                });
-                //add request to queue
-                requestQueue.add(imageRequest);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            // wait 4 seconds before getting image again
-            try {
-                Thread.sleep(4000);
+                Thread.sleep(5000);
             }
             catch(InterruptedException ex)
             {
-                Thread.currentThread().interrupt();
+                System.out.println("thread interrupted");
             }
         }
     }
