@@ -8,7 +8,6 @@ from datetime import datetime
 
 pir = MotionSensor(14)
 camera = PiCamera()
-camera.rotation = 180
 
 app = Flask(__name__)
 
