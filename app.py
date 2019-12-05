@@ -55,10 +55,14 @@ def stopDetection():
 
 # uses the attached pi camera to take picture
 # return its unique ID (exact time taken) to user
-@app.route('/getImage', methods=['GET'])
-def getImage():
-	timestamp = datetime.now()
-	imgID = timestamp.strftime("%d-%m-%Y_%H:%M:%S")
-	fileLoc = "/home/pi/Desktop/final/static/" + imgID + ".jpg"
-	camera.capture(fileLoc)
-	return str("/static/" + imgID + ".jpg")
+@app.route('/getImage/<string:key>', methods=['GET'])
+def getImage(key):
+	# check validity of request
+	# only android app has access to encrypted key
+	# key encrypted with SHA-256 alg
+	if key == "d2f747a10ab09354956653c28dd09fb03880990b211ce8e53b7c5d6507e8b1c9":
+		timestamp = datetime.now()
+		imgID = timestamp.strftime("%d-%m-%Y_%H:%M:%S")
+		fileLoc = "/home/pi/Desktop/final/static/" + imgID + ".jpg"
+		camera.capture(fileLoc)
+		return str("/static/" + imgID + ".jpg")

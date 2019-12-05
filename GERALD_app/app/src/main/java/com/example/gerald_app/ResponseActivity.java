@@ -85,7 +85,8 @@ public class ResponseActivity extends AppCompatActivity {
         imageCheck = true;
         while (imageCheck) {
             final RequestQueue requestQueue = Volley.newRequestQueue(this);
-            String url = serverIP + "/getImage";
+            // Use encrypted string to gain access to getImage function on server
+            String url = serverIP + "/getImage/d2f747a10ab09354956653c28dd09fb03880990b211ce8e53b7c5d6507e8b1c9";
             StringRequest stringRequest
                     = new StringRequest(
                     Request.Method.GET,
