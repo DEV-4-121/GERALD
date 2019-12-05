@@ -123,7 +123,7 @@ public class ResponseActivity extends AppCompatActivity {
                     });
             requestQueue.add(stringRequest);
             try {
-                Thread.sleep(5000);
+                Thread.sleep(2000);
             }
             catch(InterruptedException ex)
             {
