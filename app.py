@@ -53,17 +53,6 @@ def stopDetection():
 	detect = False
 	return "Stopped Motion Detection"
 
-
-# app route used to get snapshot from camera module
-@app.route('/getimg', methods=['POST'])
-def getImg():
-	timestamp = datetime.now()
-	unID = timestamp.strftime("%d-%m-%Y_%H.%M.%S")
-	imgName = "secimg_" + unID + ".jpg"
-	fileLoc = "/home/pi/Desktop/final/static/" + imgName
-	camera.capture(fileLoc)
-	return "took picture"
-
 # uses the attached pi camera to take picture
 # return its unique ID (exact time taken) to user
 @app.route('/getImage', methods=['GET'])
