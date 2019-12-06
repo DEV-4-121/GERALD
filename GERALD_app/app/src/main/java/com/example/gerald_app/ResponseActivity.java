@@ -20,10 +20,11 @@ import com.android.volley.toolbox.Volley;
 
 public class ResponseActivity extends AppCompatActivity {
 
-    private Button btnReset, btnPolice;
+    private Button btnReset, btnPolice, btnTurret;
     private ImageView imgCapture;
     private static boolean imageCheck;
     private static final String serverIP = "http://169.254.91.218:5000";
+    private static boolean lastReqFinished = true;
 
 
 
@@ -32,9 +33,12 @@ public class ResponseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_response);
 
+        final RequestQueue requestQueue = Volley.newRequestQueue(this);
+
         // create instances of buttons in activity
         btnReset = findViewById(R.id.btnReset);
         btnPolice = findViewById(R.id.btnPolice);
+        btnTurret = findViewById(R.id.btnTurret);
         imgCapture = findViewById(R.id.imgCapture);
 
         // call police on btnPolice click
@@ -48,6 +52,31 @@ public class ResponseActivity extends AppCompatActivity {
                 }
         });
 
+        btnTurret.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Tell server to fire turret
+                String url = serverIP + "/fireTurret/d2f747a10ab09354956653c28dd09fb03880990b211ce8e53b7c5d6507e8b1c9";
+                StringRequest stringRequest
+                        = new StringRequest(
+                        Request.Method.GET,
+                        url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                System.out.println("turret fired");
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error)
+                            {
+                                System.out.println("Failed to fire turret");
+                            }
+                        });
+                requestQueue.add(stringRequest);
+            }
+        });
 
         // reset button brings user back to main activity page with the option to initialize the security system again
         btnReset.setOnClickListener(new View.OnClickListener() {
@@ -55,6 +84,7 @@ public class ResponseActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // exit bgThread
                 imageCheck = false;
+                lastReqFinished = true;
 
                 // bring user back to main activity
                 openMainActivity();
@@ -83,8 +113,8 @@ public class ResponseActivity extends AppCompatActivity {
     // nested requests firsts takes image with camera, then populates the apps image view with it
     public void updateImg() {
         imageCheck = true;
+        final RequestQueue requestQueue = Volley.newRequestQueue(this);
         while (imageCheck) {
-            final RequestQueue requestQueue = Volley.newRequestQueue(this);
             // Use encrypted string to gain access to getImage function on server
             String url = serverIP + "/getImage/d2f747a10ab09354956653c28dd09fb03880990b211ce8e53b7c5d6507e8b1c9";
             StringRequest stringRequest
@@ -103,12 +133,14 @@ public class ResponseActivity extends AppCompatActivity {
                                 public void onResponse(Bitmap imgResponse) {
                                     // Assign the response to imgCapture
                                     imgCapture.setImageBitmap(imgResponse);
+                                    lastReqFinished = true;
                                 }
                             }, maxWidth, maxHeight, ImageView.ScaleType.CENTER_INSIDE, null, new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error)
                                 {
                                     System.out.println("Failed to get image from camera on server");
+                                    lastReqFinished = true;
                                 }
                             });
                             //add request to queue
@@ -120,15 +152,12 @@ public class ResponseActivity extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error)
                         {
                             error.printStackTrace();
+                            lastReqFinished = true;
                         }
                     });
-            requestQueue.add(stringRequest);
-            try {
-                Thread.sleep(2000);
-            }
-            catch(InterruptedException ex)
-            {
-                System.out.println("thread interrupted");
+            if (lastReqFinished) {
+                requestQueue.add(stringRequest);
+                lastReqFinished = false;
             }
         }
     }
