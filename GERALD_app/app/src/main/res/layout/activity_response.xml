@@ -9,32 +9,34 @@
 
     <Button
         android:id="@+id/btnReset"
-        android:layout_width="311dp"
-        android:layout_height="70dp"
+        android:layout_width="356dp"
+        android:layout_height="69dp"
         android:text="Reset GERALD"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.732"
+        app:layout_constraintVertical_bias="0.823"
         tools:visibility="visible" />
 
     <Button
         android:id="@+id/btnTurret"
-        android:layout_width="311dp"
-        android:layout_height="70dp"
+        android:layout_width="356dp"
+        android:layout_height="69dp"
         android:text="Turret"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.429"
+        app:layout_constraintVertical_bias="0.479"
         tools:visibility="visible" />
 
     <Button
         android:id="@+id/btnPolice"
-        android:layout_width="311dp"
-        android:layout_height="70dp"
+        android:layout_width="356dp"
+        android:layout_height="69dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:text="Notify Authorities"
@@ -78,16 +80,17 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
+        android:layout_width="440dp"
+        android:layout_height="0dp"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintBottom_toTopOf="@+id/imgCapture"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.517"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="1.0"
         app:text="GERALD SECURITY"
         app:titleTextColor="@color/black" />
 
@@ -100,7 +103,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.333"
+        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/GERALD" />
 
 
