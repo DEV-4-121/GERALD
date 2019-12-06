@@ -1,187 +1,123 @@
-package com.example.gerald_app;
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue"
+    tools:context=".MainActivity">
 
-import androidx.appcompat.app.AppCompatActivity;
+    <!--    <TextView-->
+    <!--        android:id="@+id/textView2"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_margin="1dp"-->
+    <!--        android:layout_marginLeft="1dp"-->
+    <!--        android:layout_marginTop="1dp"-->
+    <!--        android:layout_marginRight="1dp"-->
+    <!--        android:layout_marginBottom="8dp"-->
+    <!--        android:padding="1dp"-->
+    <!--        android:paddingStart="1dp"-->
+    <!--        android:paddingLeft="1dp"-->
+    <!--        android:paddingTop="1dp"-->
+    <!--        android:paddingEnd="1dp"-->
+    <!--        android:paddingRight="1dp"-->
+    <!--        android:paddingBottom="1dp"-->
+    <!--        android:text="Welcome to GERALD Security"-->
+    <!--        android:textSize="24sp"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/btnRun"-->
+    <!--        app:layout_constraintHorizontal_bias="0.494"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        app:layout_constraintRight_toRightOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:layout_constraintVertical_bias="0.036" />-->
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="85dp"
+        android:layout_height="27dp"
+        android:layout_marginBottom="7dp"
+        android:text="Designed by DEV4"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+    <Button
+        android:id="@+id/btnRun"
+        android:layout_width="342dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Turn GERALD On"
+        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.758"
+        tools:visibility="visible" />
 
-import static java.lang.Boolean.parseBoolean;
+    <Button
+        android:id="@+id/btnStop"
+        android:layout_width="342dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Turn GERALD Off"
+        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.879"
+        tools:visibility="visible" />
 
-public class MainActivity extends AppCompatActivity {
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="348dp"
+        android:layout_height="260dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="117dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="307dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.446"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.64"
+        app:srcCompat="@drawable/device" />
 
-    private Button btnRun, btnStop;
-    private static boolean detect;
-    private static boolean motionDetected;
-    private static final String serverIP = "http://169.254.91.218:5000";
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar2"
+        android:layout_width="437dp"
+        android:layout_height="59dp"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        final RequestQueue requestQueue = Volley.newRequestQueue(this);
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="75dp"
+        android:layout_height="56dp"
+        app:layout_constraintBottom_toTopOf="@+id/imgCapture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbar2"
+        app:layout_constraintVertical_bias="0.333"
+        app:srcCompat="@drawable/GERALD" />
 
-        // get access to btnRun and btnStop
-        btnRun = findViewById(R.id.btnRun);
-        btnStop = findViewById(R.id.btnStop);
 
-        // turn off stop button on app initialization
-        btnStop.setEnabled(false);
-
-        // Initiate security protocol
-        // Sends post method to server to turn on motion sensor.
-        // Start method on new thread to check in real time if motion was detected
-        btnRun.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Tell server to turn security system on through post request
-                String url = serverIP + "/init";
-                StringRequest stringRequest
-                        = new StringRequest(
-                        Request.Method.POST,
-                        url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                // start new thread to periodically check if motion has been detected
-                                detect = true;
-
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        checkDetection();
-                                    }
-                                }).start();
-
-                                System.out.println("security system initialized");
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error)
-                            {
-                                error.printStackTrace();
-                            }
-                        });
-                requestQueue.add(stringRequest);
-
-                // disable button and enable stop button
-                btnRun.setEnabled(false);
-                btnStop.setEnabled(true);
-            }
-        });
-
-        // Hitting stop button will exit threads on both server and app side that are checking for motion
-        btnStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // stop check detection thread
-                detect = false;
-
-                // Tell server to stop motion detection through post request
-                String url = serverIP + "/stopDetection";
-                StringRequest stringRequest
-                        = new StringRequest(
-                        Request.Method.POST,
-                        url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                System.out.println("motion detection has been halted");
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error)
-                            {
-                                error.printStackTrace();
-                            }
-                        });
-                requestQueue.add(stringRequest);
-
-                // disable button and enable start button
-                btnRun.setEnabled(true);
-                btnStop.setEnabled(false);
-            }
-        });
-    }
-
-    // method to run on separate thread to constantly check for motion detection from server
-    private void checkDetection() {
-
-        final RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        // initialize detected as false - new run sequence
-        motionDetected = false;
-
-        // keep thread alive while user has not turned GERALD off and motion has not been detected
-        while (detect) {
-            try {
-                // get boolean from server to check status of motion sensor
-                String url = serverIP + "/checkDetection";
-                StringRequest boolRequest
-                        = new StringRequest(
-                        Request.Method.GET,
-                        url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                System.out.println(response);
-                                if (parseBoolean(response)) {
-                                    setDetectStatus();
-                                }
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                System.out.println("Failed to check detection from server");
-                            }
-                        });
-                requestQueue.add(boolRequest);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            // check if motion has been detected
-            if (motionDetected) {
-                // open response activity
-                openResponseActivity();
-                return;
-            }
-
-            // wait 2 seconds before checking server detected status
-            try {
-                Thread.sleep(2000);
-            }
-             catch(InterruptedException ex)
-            {
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
-
-    // sets global detected variable to true
-    private void setDetectStatus() {
-        motionDetected = true;
-    }
-
-    // opens response activity when motion is detected
-    private void openResponseActivity() {
-        Intent intent = new Intent(this, ResponseActivity.class);
-        startActivity(intent);
-    }
-}
-
+</androidx.constraintlayout.widget.ConstraintLayout>
 // REFERENCES
 // For GET/POST methods with flask API: https://varunmishra.com/teaching/cs65/http-volley/
 // More references for server communication: https://medium.com/@manuaravindpta/networking-using-volley-library-39c22061b4ba
