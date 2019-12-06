@@ -26,8 +26,6 @@ def initGerald():
 	detected = False
 	# add method to motion sensor to set detected bool to true on motion detection
 	pir.when_motion = setDetected
-	#bgThread = Thread(target=detectMotion)
-	#bgThread.start()
 
 	return "Connection okay. Security System Initialized"
 
