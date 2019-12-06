@@ -65,3 +65,18 @@ def getImage(key):
 		fileLoc = "/home/pi/Desktop/final/static/" + imgID + ".jpg"
 		camera.capture(fileLoc)
 		return str("/static/" + imgID + ".jpg")
+
+
+# runs motor on attached nerf gun to fire turret on command from android app
+@app.route('/fireTurret/<string:key>', methods=['GET'])
+def fireTurret(key):
+	if key == "d2f747a10ab09354956653c28dd09fb03880990b211ce8e53b7c5d6507e8b1c9":
+		GPIO.setmode(GPIO.BCM)
+		RELAY_PIN= 21
+		GPIO.setup(RELAY_PIN, GPIO.OUT)
+
+		GPIO.output(RELAY_PIN, GPIO.HIGH)
+		time.sleep(5)
+		GPIO.output(RELAY_PIN, GPIO.LOW)
+		return "turret fired"
+	return "turret did not fire"
