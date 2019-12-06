@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private static boolean detect;
     private static boolean motionDetected;
     private static final String serverIP = "http://169.254.91.218:5000";
+    private static boolean lastReqFinished = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,15 +140,20 @@ public class MainActivity extends AppCompatActivity {
                                 if (parseBoolean(response)) {
                                     setDetectStatus();
                                 }
+                                lastReqFinished = true;
                             }
                         },
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 System.out.println("Failed to check detection from server");
+                                lastReqFinished = true;
                             }
                         });
-                requestQueue.add(boolRequest);
+                if (lastReqFinished) {
+                    requestQueue.add(boolRequest);
+                    lastReqFinished = false;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -157,15 +163,6 @@ public class MainActivity extends AppCompatActivity {
                 // open response activity
                 openResponseActivity();
                 return;
-            }
-
-            // wait 2 seconds before checking server detected status
-            try {
-                Thread.sleep(1000);
-            }
-             catch(InterruptedException ex)
-            {
-                Thread.currentThread().interrupt();
             }
         }
     }
